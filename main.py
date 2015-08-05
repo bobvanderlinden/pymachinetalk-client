@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 from zeroconfbrowser import ZeroconfBrowser
 from machinestatusclient import MachineStatusClient
 import zmq
