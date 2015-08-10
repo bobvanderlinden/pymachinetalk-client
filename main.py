@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 from zeroconfbrowser import ZeroconfBrowser
 from machinestatusclient import MachineStatusClient
 import zmq
@@ -13,12 +13,12 @@ statusClient = None
 def resolveServices(uuid, resolved):
     dsns = {}
     def resolved(tdict):
-        service = tdict['service']
+        service = tdict["service"]
         if service in dsns: #once only
             return
-        dsn =  tdict['dsn']
+        dsn =  tdict["dsn"]
         dsns[service] = dsn
-        print "resolved", service, dsn #, dsns
+        print("resolved", service, dsn) #, dsns
 
 def machine_discovered(machine):
     print("Machine found: %s" % (machine.uuid))
@@ -31,10 +31,10 @@ def initial_discovery_finished(machines):
     print("\n".join(machines.keys()))
 
     if not uuid in machines:
-        print "My machine was not found"
+        print("My machine was not found")
         return
     else:
-        print "Found my machine"
+        print("Found my machine")
 
     machine = machines[uuid]
 

@@ -55,9 +55,9 @@ class MachineStatusClient:
             print("Unrecognized message type: %s" % str(self.rx))
 
     def handleTaskPing(self, message):
-        print "Ping received"
+        print("Ping received")
         self.send_command_msg(MT_PING_ACKNOWLEDGE)
 
     def handleTaskEmcStatFullUpdate(self, message):
-        print "Full update received"
+        print("Full update received")
 
