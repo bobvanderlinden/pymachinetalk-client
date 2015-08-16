@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from distutils.core import setup
 
@@ -8,4 +8,10 @@ setup(name='pymachinetalk',
       author='Bob van der Linden',
       author_email='bobvanderlinden@gmail.com',
       url='https://github.com/bobvanderlinden/pymachinetalk/',
-     )
+      install_requires=[
+          "machinekit_protobuf",
+          "aiozmq",
+          "zmq",
+          "zeroconf"
+      ],
+      )
