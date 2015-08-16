@@ -2,6 +2,8 @@
 from zeroconfbrowser import ZeroconfBrowser
 from machinestatusclient import MachineStatusClient
 import zmq
+import asyncio
+import threading
 
 uuid="a42c8c6b-4025-4f83-ba28-dad21114744a"
 
@@ -40,12 +42,16 @@ def initial_discovery_finished(machines):
 
     statusClient = MachineStatusClient(context, machine.services["status"].dsn)
 
+loop = asyncio.get_event_loop()
+
 browser = ZeroconfBrowser(
+    loop,
     on_machine_discovered = machine_discovered,
     on_service_discovered = service_discovered,
     on_initial_discovery_finished = initial_discovery_finished
     )
 
-import time
-while True:
-     time.sleep(3)
+print("thread: %s" % threading.current_thread())
+
+loop.run_forever()
+loop.close()

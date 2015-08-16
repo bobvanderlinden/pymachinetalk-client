@@ -12,7 +12,8 @@ MachineService = namedtuple("MachineService", ["name", "dsn"])
 
 class ZeroconfBrowser():
     """Searches the network for machine services"""
-    def __init__(self, on_machine_discovered=None, on_service_discovered=None, on_initial_discovery_finished=None, on_failure=None):
+    def __init__(self, loop, on_machine_discovered=None, on_service_discovered=None, on_initial_discovery_finished=None, on_failure=None):
+        self.loop = loop
         self.service_browsers = dict()
         self.resolving_services = set()
         self.machines = dict()
@@ -35,6 +36,22 @@ class ZeroconfBrowser():
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.zeroconf.close()
+
+    def emit_machine_discovered(self, machine):
+        if not self.on_machine_discovered is None:
+            self.loop.call_soon_threadsafe(self.on_machine_discovered, machine)
+
+    def emit_service_discovered(self, machine, machineService):
+        if not self.on_service_discovered is None:
+            self.loop.call_soon_threadsafe(self.on_service_discovered, machine, machineService)
+
+    def emit_initial_discovery_finished(self):
+        if not self.on_initial_discovery_finished is None:
+            self.loop.call_soon_threadsafe(self.on_initial_discovery_finished)
+
+    def emit_failure(self, error):
+        if not self.on_failure is None:
+            self.loop.call_soon_threadsafe(self.on_failure, error)
 
     def browse(self, serviceName):
         if serviceName in self.service_browsers:
@@ -75,8 +92,7 @@ class ZeroconfBrowser():
             self.machines[uuid] = machine
 
             # Notify consumer about discovered machine.
-            if not self.on_machine_discovered is None:
-                self.on_machine_discovered(machine)
+            self.emit_machine_discovered(machine)
 
         machine = self.machines[uuid]
 
@@ -86,5 +102,4 @@ class ZeroconfBrowser():
             dsn = dsn
             )
         machine.services[machineService.name] = machineService
-        if not self.on_service_discovered is None:
-            self.on_service_discovered(machine, machineService)
+        self.emit_service_discovered(machine, machineService)
